@@ -27,9 +27,7 @@ defmodule AdventOfCode2019.FuelRequirements do
   Does not account for the extra needed fuel to lift the fuel
   """
   def mass_to_fuel(mass) do
-    mass
-    |> Kernel.div(3)
-    |> Kernel.-(2)
+    (div(mass, 3) - 2) |> max(0)
   end
 
   @doc """
@@ -38,13 +36,12 @@ defmodule AdventOfCode2019.FuelRequirements do
   """
   def mass_to_total_fuel(mass), do: calculate_total_fuel(mass, 0)
 
+  # Calculate total fuel needed recursively
+  defp calculate_total_fuel(0, total_fuel), do: total_fuel
+
   defp calculate_total_fuel(mass, total_fuel) do
     fuel_for_mass = mass |> mass_to_fuel()
 
-    if fuel_for_mass <= 0 do
-      total_fuel
-    else
-      calculate_total_fuel(fuel_for_mass, total_fuel + fuel_for_mass)
-    end
+    calculate_total_fuel(fuel_for_mass, total_fuel + fuel_for_mass)
   end
 end
