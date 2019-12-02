@@ -28,8 +28,7 @@ defmodule AdventOfCode2019.FuelRequirements do
   """
   def mass_to_fuel(mass) do
     mass
-    |> Kernel./(3)
-    |> Kernel.trunc()
+    |> Kernel.div(3)
     |> Kernel.-(2)
   end
 

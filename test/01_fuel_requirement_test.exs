@@ -6,8 +6,7 @@ defmodule AdventOfCode2019.FuelRequirementsTest do
   @numbers "input_01_fuel.txt"
            |> Path.expand("./test")
            |> File.read!()
-           |> String.split("\n")
-           |> Enum.reject(&(&1 == ""))
+           |> String.split("\n", trim: true)
            |> Enum.map(&String.to_integer/1)
 
   describe "part 1" do
