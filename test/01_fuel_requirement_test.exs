@@ -4,7 +4,7 @@ defmodule AdventOfCode2019.FuelRequirementsTest do
   alias AdventOfCode2019.FuelRequirements
 
   @numbers "input_01_fuel.txt"
-           |> Path.expand("./test")
+           |> Path.expand("./input_files")
            |> File.read!()
            |> String.split("\n", trim: true)
            |> Enum.map(&String.to_integer/1)
