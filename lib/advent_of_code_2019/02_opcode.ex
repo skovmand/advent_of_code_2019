@@ -29,14 +29,13 @@ defmodule AdventOfCode2019.Opcode do
     |> do_compute(program, instruction_count)
   end
 
-  # Halt the program on opcode 99, returning the first integer
+  # Halt the program on opcode 99, returning the program
   defp do_compute([99 | _tail], program, _instruction_count), do: program
 
   # Do addition or multiplication for commands 1 and 2
-  defp do_compute([opcode, pos_left, pos_right, update_pos], program, instruction_count)
-       when opcode in [1, 2] do
-    left = Enum.at(program, pos_left)
-    right = Enum.at(program, pos_right)
+  defp do_compute([opcode, left, right, update_pos], program, instruction_count) when opcode in [1, 2] do
+    left = Enum.at(program, left)
+    right = Enum.at(program, right)
 
     program
     |> List.update_at(update_pos, fn _ -> calculate_opcode(opcode, left, right) end)
