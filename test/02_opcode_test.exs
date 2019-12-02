@@ -4,7 +4,7 @@ defmodule AdventOfCode2019.OpcodeTest do
   alias AdventOfCode2019.Opcode
 
   @opcode "input_02_opcode.txt"
-          |> Path.expand("./test")
+          |> Path.expand("./input_files")
           |> File.read!()
           |> String.split([",", "\n"], trim: true)
           |> Enum.map(&String.to_integer/1)
@@ -23,15 +23,17 @@ defmodule AdventOfCode2019.OpcodeTest do
     end
 
     test "1,1,1,4,99,5,6,0,99 becomes 30,1,1,4,2,5,6,0,99" do
-      assert [1,1,1,4,99,5,6,0,99] |> Opcode.compute() == [30,1,1,4,2,5,6,0,99]
+      assert [1, 1, 1, 4, 99, 5, 6, 0, 99] |> Opcode.compute() == [30, 1, 1, 4, 2, 5, 6, 0, 99]
     end
 
     test "restore the gravity assist program to the 1202 program alarm" do
-      assert @opcode
-      |> List.update_at(1, fn _ -> 12 end)
-      |> List.update_at(2, fn _ -> 2 end)
-      |> Opcode.compute()
-      |> Enum.at(0) == 4714701
+      assert @opcode |> Opcode.compute_result(12, 2) == 4_714_701
+    end
+  end
+
+  describe "part 2" do
+    test "combination to get 19690720" do
+      assert Opcode.brute_force_inputs(@opcode) == {51, 21}
     end
   end
 end
