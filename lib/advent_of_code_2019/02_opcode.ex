@@ -5,18 +5,20 @@ defmodule AdventOfCode2019.Opcode do
 
   @doc """
   Computes a program, returning the first number as result
+  Noun replaces the program element at position 1
+  Verb replaces the program element at position 2
   """
-  def compute_result(program, pos_1, pos_2) do
-    program |> initialize_program(pos_1, pos_2) |> compute() |> Enum.at(0)
+  def compute_result(program, noun, verb) do
+    program |> initialize_program(noun, verb) |> compute() |> Enum.at(0)
   end
 
   @doc """
   Initialize the program by replacing values at position 1 and 2
   """
-  def initialize_program(program, pos_1, pos_2) do
+  def initialize_program(program, noun, verb) do
     program
-    |> List.update_at(1, fn _ -> pos_1 end)
-    |> List.update_at(2, fn _ -> pos_2 end)
+    |> List.update_at(1, fn _ -> noun end)
+    |> List.update_at(2, fn _ -> verb end)
   end
 
   @doc """
