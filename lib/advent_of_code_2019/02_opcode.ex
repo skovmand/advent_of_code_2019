@@ -33,9 +33,9 @@ defmodule AdventOfCode2019.Opcode do
   defp do_compute([99 | _tail], program, _instruction_count), do: program
 
   # Do addition or multiplication for commands 1 and 2
-  defp do_compute([opcode, left, right, update_pos], program, instruction_count) when opcode in [1, 2] do
-    left = Enum.at(program, left)
-    right = Enum.at(program, right)
+  defp do_compute([opcode, left_pos, right_pos, update_pos], program, instruction_count) when opcode in [1, 2] do
+    left = Enum.at(program, left_pos)
+    right = Enum.at(program, right_pos)
 
     program
     |> List.update_at(update_pos, fn _ -> calculate_opcode(opcode, left, right) end)
