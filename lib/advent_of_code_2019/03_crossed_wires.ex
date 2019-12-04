@@ -13,8 +13,7 @@ defmodule AdventOfCode2019.CrossedWires do
     def get(coordinate_system, {x, y}), do: Map.fetch(coordinate_system, {x, y})
 
     def put(coordinate_system, {x, y}, tag) do
-      coordinate_system
-      |> Map.update({x, y}, MapSet.new() |> MapSet.put(tag), fn set -> MapSet.put(set, tag) end)
+      coordinate_system |> Map.put({x, y}, tag)
     end
 
     # Fill right or left (y is unchanged)
@@ -36,10 +35,11 @@ defmodule AdventOfCode2019.CrossedWires do
       |> Enum.reduce(coordinate_system, fn {x, y}, coordinate_system -> coordinate_system |> put({x, y}, tag) end)
     end
 
-    def intersections(coordinate_system) do
-      coordinate_system
-      |> Enum.filter(fn {_position, set} -> set |> MapSet.size() == 2 end)
-      |> Enum.map(fn {position, _set} -> position end)
+    def intersection(cs1, cs2) do
+      cs1_keys = cs1 |> Map.keys() |> MapSet.new()
+      cs2_keys = cs2 |> Map.keys() |> MapSet.new()
+
+      MapSet.intersection(cs1_keys, cs2_keys) |> MapSet.to_list()
     end
   end
 
@@ -49,11 +49,10 @@ defmodule AdventOfCode2019.CrossedWires do
   def closest_distance(input) do
     [first_wire_path, second_wire_path] = input |> to_instructions()
 
-    diagram = CoordinateSystem.new()
+    first_wire_diagram = fill_wire_path(first_wire_path, CoordinateSystem.new())
+    second_wire_diagram = fill_wire_path(second_wire_path, CoordinateSystem.new())
 
-    [{first_wire_path, :fw}, {second_wire_path, :sw}]
-    |> Enum.reduce(diagram, fn {wire_path, tag}, diagram -> fill_wire_path(wire_path, diagram, tag) end)
-    |> CoordinateSystem.intersections()
+    CoordinateSystem.intersection(first_wire_diagram, second_wire_diagram)
     |> Enum.reject(fn {x, y} -> {x, y} == {0, 0} end)
     |> Enum.min_by(&manhattan_distance/1)
     |> manhattan_distance()
@@ -68,11 +67,11 @@ defmodule AdventOfCode2019.CrossedWires do
     |> Enum.map(fn one_line -> one_line |> Enum.map(&string_to_instruction/1) end)
   end
 
-  defp fill_wire_path(wire_path, diagram, tag) do
+  defp fill_wire_path(wire_path, diagram) do
     wire_path
     |> Enum.reduce({{0, 0}, diagram}, fn {direction, amount}, {from_position, diagram} ->
       to_position = new_position(from_position, direction, amount)
-      diagram = diagram |> CoordinateSystem.fill(from_position, to_position, tag)
+      diagram = diagram |> CoordinateSystem.fill(from_position, to_position, nil)
 
       {to_position, diagram}
     end)
