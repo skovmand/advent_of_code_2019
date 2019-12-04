@@ -38,7 +38,7 @@ defmodule AdventOfCode2019.CrossedWiresTest do
       U62,R66,U55,R34,D71,R55,D58,R83
       """
 
-      assert input |> CrossedWires.fewest_steps() == 610
+      assert input |> CrossedWires.shortest_path() == 610
     end
 
     test "example 2" do
@@ -47,11 +47,11 @@ defmodule AdventOfCode2019.CrossedWiresTest do
       U98,R91,D20,R16,D67,R40,U7,R15,U6,R7
       """
 
-      assert input |> CrossedWires.fewest_steps() == 410
+      assert input |> CrossedWires.shortest_path() == 410
     end
 
     test "the actual closest intersection" do
-      assert @wire_paths |> CrossedWires.fewest_steps() == 0
+      assert @wire_paths |> CrossedWires.shortest_path() == 14358
     end
   end
 end

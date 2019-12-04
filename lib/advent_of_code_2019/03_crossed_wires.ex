@@ -21,23 +21,24 @@ defmodule AdventOfCode2019.CrossedWires do
     end
 
     # Fill right or left (y is unchanged)
-    def fill(coordinate_system, {x1, y}, {x2, y}, value) do
+    def fill(coordinate_system, {x1, y}, {x2, y}, step_count_offset) do
       x1..x2
       |> Enum.map(fn x -> {x, y} end)
-      |> fill_coordinates(coordinate_system, value)
+      |> fill_coordinates(coordinate_system, step_count_offset)
     end
 
     # Fill up or down (x is unchanged)
-    def fill(coordinate_system, {x, y1}, {x, y2}, value) do
+    def fill(coordinate_system, {x, y1}, {x, y2}, step_count_offset) do
       y1..y2
       |> Enum.map(fn y -> {x, y} end)
-      |> fill_coordinates(coordinate_system, value)
+      |> fill_coordinates(coordinate_system, step_count_offset)
     end
 
-    defp fill_coordinates(coordinates, coordinate_system, value) do
+    defp fill_coordinates(coordinates, coordinate_system, step_count_offset) do
       coordinates
-      |> Enum.reduce(coordinate_system, fn {x, y}, coordinate_system ->
-        coordinate_system |> put({x, y}, value)
+      |> Enum.with_index()
+      |> Enum.reduce(coordinate_system, fn {{x, y}, count}, coordinate_system ->
+        coordinate_system |> put({x, y}, step_count_offset + count)
       end)
     end
 
@@ -64,6 +65,26 @@ defmodule AdventOfCode2019.CrossedWires do
     |> manhattan_distance()
   end
 
+  @doc """
+  Find the intersection with the lowest distance to the central port
+  """
+  def shortest_path(input) do
+    [first_wire_path, second_wire_path] = input |> to_instructions()
+
+    first_wire_diagram = fill_wire_path(first_wire_path, CoordinateSystem.new())
+    second_wire_diagram = fill_wire_path(second_wire_path, CoordinateSystem.new())
+
+    CoordinateSystem.intersection(first_wire_diagram, second_wire_diagram)
+    |> Enum.reject(fn {x, y} -> {x, y} == {0, 0} end)
+    |> Enum.map(fn {x, y} ->
+      first_step_count = first_wire_diagram |> Map.fetch!({x, y})
+      second_step_count = second_wire_diagram |> Map.fetch!({x, y})
+
+      first_step_count + second_step_count
+    end)
+    |> Enum.min()
+  end
+
   defp manhattan_distance({x, y}), do: abs(x) + abs(y)
 
   defp to_instructions(input) do
@@ -75,13 +96,13 @@ defmodule AdventOfCode2019.CrossedWires do
 
   defp fill_wire_path(wire_path, diagram) do
     wire_path
-    |> Enum.reduce({{0, 0}, diagram}, fn {direction, amount}, {from_position, diagram} ->
+    |> Enum.reduce({{0, 0}, 0, diagram}, fn {direction, amount}, {from_position, step_count, diagram} ->
       to_position = new_position(from_position, direction, amount)
-      diagram = diagram |> CoordinateSystem.fill(from_position, to_position, 0)
+      diagram = diagram |> CoordinateSystem.fill(from_position, to_position, step_count)
 
-      {to_position, diagram}
+      {to_position, step_count + amount, diagram}
     end)
-    |> elem(1)
+    |> elem(2)
   end
 
   defp string_to_instruction("R" <> number), do: {:right, String.to_integer(number)}
