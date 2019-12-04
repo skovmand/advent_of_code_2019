@@ -12,27 +12,33 @@ defmodule AdventOfCode2019.CrossedWires do
 
     def get(coordinate_system, {x, y}), do: Map.fetch(coordinate_system, {x, y})
 
-    def put(coordinate_system, {x, y}, tag) do
-      coordinate_system |> Map.put({x, y}, tag)
+    @doc """
+    Put a value into coordinates
+    If a value is already present, use the lowest of the two
+    """
+    def put(coordinate_system, {x, y}, value) when is_integer(value) do
+      coordinate_system |> Map.update({x, y}, value, fn existing_value -> min(value, existing_value) end)
     end
 
     # Fill right or left (y is unchanged)
-    def fill(coordinate_system, {x1, y}, {x2, y}, tag) do
+    def fill(coordinate_system, {x1, y}, {x2, y}, value) do
       x1..x2
       |> Enum.map(fn x -> {x, y} end)
-      |> fill_coordinates(coordinate_system, tag)
+      |> fill_coordinates(coordinate_system, value)
     end
 
     # Fill up or down (x is unchanged)
-    def fill(coordinate_system, {x, y1}, {x, y2}, tag) do
+    def fill(coordinate_system, {x, y1}, {x, y2}, value) do
       y1..y2
       |> Enum.map(fn y -> {x, y} end)
-      |> fill_coordinates(coordinate_system, tag)
+      |> fill_coordinates(coordinate_system, value)
     end
 
-    defp fill_coordinates(coordinates, coordinate_system, tag) do
+    defp fill_coordinates(coordinates, coordinate_system, value) do
       coordinates
-      |> Enum.reduce(coordinate_system, fn {x, y}, coordinate_system -> coordinate_system |> put({x, y}, tag) end)
+      |> Enum.reduce(coordinate_system, fn {x, y}, coordinate_system ->
+        coordinate_system |> put({x, y}, value)
+      end)
     end
 
     def intersection(cs1, cs2) do
@@ -71,7 +77,7 @@ defmodule AdventOfCode2019.CrossedWires do
     wire_path
     |> Enum.reduce({{0, 0}, diagram}, fn {direction, amount}, {from_position, diagram} ->
       to_position = new_position(from_position, direction, amount)
-      diagram = diagram |> CoordinateSystem.fill(from_position, to_position, nil)
+      diagram = diagram |> CoordinateSystem.fill(from_position, to_position, 0)
 
       {to_position, diagram}
     end)
