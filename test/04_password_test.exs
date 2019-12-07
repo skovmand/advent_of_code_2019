@@ -1,7 +1,7 @@
-defmodule AdventOfCode2019.PasswordTest do
+defmodule Advent19.PasswordTest do
   use ExUnit.Case, async: true
 
-  alias AdventOfCode2019.Password
+  alias Advent19.Password
 
   describe "part 1: password combinations" do
     test "111111" do

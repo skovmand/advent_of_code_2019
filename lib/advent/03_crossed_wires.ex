@@ -1,4 +1,4 @@
-defmodule AdventOfCode2019.CrossedWires do
+defmodule Advent19.CrossedWires do
   @moduledoc """
   Find the intersection point closest to the central port
   """

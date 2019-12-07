@@ -1,4 +1,4 @@
-defmodule AdventOfCode2019.IntcodeV2 do
+defmodule Advent19.IntcodeV2 do
   @moduledoc """
   Day 5 of Advent of Code 2019: Adding the Thermal Environment Supervision Terminal
   This is the resulting IntCode Computer

@@ -1,4 +1,4 @@
-defmodule AdventOfCode2019.Opcode do
+defmodule Advent19.Opcode do
   @moduledoc """
   Day 2 of Advent of Code 2019: Building a new Intcode computer and completing the gravity assist around the Moon
   """

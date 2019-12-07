@@ -1,4 +1,4 @@
-defmodule AdventOfCode2019.Common do
+defmodule Advent19.Common do
   @moduledoc """
   Common functions for Advent of Code 2019
   """

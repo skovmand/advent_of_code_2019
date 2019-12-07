@@ -1,8 +1,8 @@
-defmodule AdventOfCode2019.OrbitsTest do
+defmodule Advent19.OrbitsTest do
   use ExUnit.Case, async: true
 
-  alias AdventOfCode2019.Common
-  alias AdventOfCode2019.Orbits
+  alias Advent19.Common
+  alias Advent19.Orbits
 
   @opcode "input_06_orbits.txt"
           |> Path.expand("./input_files")

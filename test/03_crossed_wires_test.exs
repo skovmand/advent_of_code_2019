@@ -1,7 +1,7 @@
-defmodule AdventOfCode2019.CrossedWiresTest do
+defmodule Advent19.CrossedWiresTest do
   use ExUnit.Case, async: true
 
-  alias AdventOfCode2019.CrossedWires
+  alias Advent19.CrossedWires
 
   @wire_paths "input_03_crossed_wires.txt"
               |> Path.expand("./input_files")

@@ -1,4 +1,4 @@
-defmodule AdventOfCode2019.FuelRequirements do
+defmodule Advent19.FuelRequirements do
   @moduledoc """
   Advent of Code 2019, Day 1
   """

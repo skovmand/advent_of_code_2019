@@ -1,4 +1,4 @@
-defmodule AdventOfCode2019.Password do
+defmodule Advent19.Password do
   @moduledoc """
   Advent of Code 2019 day 4: Finding candidates for the forgotten password
   """

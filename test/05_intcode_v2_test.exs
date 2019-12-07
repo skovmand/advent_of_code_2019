@@ -1,8 +1,8 @@
-defmodule AdventOfCode2019.ThermalTest do
+defmodule Advent19.ThermalTest do
   use ExUnit.Case, async: true
 
-  alias AdventOfCode2019.Common
-  alias AdventOfCode2019.IntcodeV2
+  alias Advent19.Common
+  alias Advent19.IntcodeV2
 
   describe "parsing opcodes" do
     test "02" do

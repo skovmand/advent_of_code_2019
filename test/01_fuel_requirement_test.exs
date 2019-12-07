@@ -1,7 +1,7 @@
-defmodule AdventOfCode2019.FuelRequirementsTest do
+defmodule Advent19.FuelRequirementsTest do
   use ExUnit.Case, async: true
 
-  alias AdventOfCode2019.FuelRequirements
+  alias Advent19.FuelRequirements
 
   @numbers "input_01_fuel.txt"
            |> Path.expand("./input_files")

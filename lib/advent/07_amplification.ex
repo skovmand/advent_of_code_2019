@@ -1,9 +1,9 @@
-defmodule AdventOfCode2019.Amplification do
+defmodule Advent19.Amplification do
   @moduledoc """
   Send more power to the thrusters to reach Santa in time!
   """
 
-  import AdventOfCode2019.IntcodeV2, only: [compute_result: 2]
+  import Advent19.IntcodeV2, only: [compute_result: 2]
 
   @doc """
   Find the optimum phase for amplifier output given a program

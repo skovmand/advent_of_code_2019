@@ -1,4 +1,4 @@
-defmodule AdventOfCode2019.Orbits do
+defmodule Advent19.Orbits do
   @moduledoc """
   Calculating Orbits
   """
