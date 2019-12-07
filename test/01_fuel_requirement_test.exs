@@ -1,13 +1,13 @@
 defmodule Advent19.FuelRequirementsTest do
   use ExUnit.Case, async: true
 
+  alias Advent19.Common
   alias Advent19.FuelRequirements
 
   @numbers "input_01_fuel.txt"
            |> Path.expand("./input_files")
            |> File.read!()
-           |> String.split("\n", trim: true)
-           |> Enum.map(&String.to_integer/1)
+           |> Common.integer_list()
 
   describe "part 1" do
     test "For a mass of 12, divide by 3 and round down to get 4, then subtract 2 to get 2" do

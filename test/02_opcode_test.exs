@@ -1,13 +1,13 @@
 defmodule Advent19.OpcodeTest do
   use ExUnit.Case, async: true
 
+  alias Advent19.Common
   alias Advent19.Opcode
 
   @opcode "input_02_opcode.txt"
           |> Path.expand("./input_files")
           |> File.read!()
-          |> String.split([",", "\n"], trim: true)
-          |> Enum.map(&String.to_integer/1)
+          |> Common.integer_list()
 
   describe "part 1" do
     test "1,0,0,0,99 becomes 2,0,0,0,99" do
