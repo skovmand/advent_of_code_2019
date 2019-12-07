@@ -6,6 +6,7 @@ My goals for AoC2019:
 
 - Complete every day
 - Exercise and improve my Elixir skills
+- Solve some puzzles
 - Publish readable code
 
 I will not optimize for speed, or for lines of code.
