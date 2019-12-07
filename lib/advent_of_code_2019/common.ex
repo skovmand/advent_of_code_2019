@@ -16,7 +16,7 @@ defmodule AdventOfCode2019.Common do
   """
   def integer_list(input) do
     input
-    |> String.split(",", trim: true)
+    |> String.split([",", "\n"], trim: true)
     |> Enum.map(&String.to_integer/1)
   end
 end
