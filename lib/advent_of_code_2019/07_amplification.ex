@@ -3,7 +3,7 @@ defmodule AdventOfCode2019.Amplification do
   Send more power to the thrusters to reach Santa in time!
   """
 
-  import AdventOfCode2019.IntCode.V5, only: [compute_result: 2]
+  import AdventOfCode2019.IntcodeV2, only: [compute_result: 2]
 
   @doc """
   Find the optimum phase for amplifier output given a program
