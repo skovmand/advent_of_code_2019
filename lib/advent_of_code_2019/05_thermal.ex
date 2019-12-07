@@ -4,15 +4,6 @@ defmodule AdventOfCode2019.Thermal do
   """
 
   @doc """
-  Parse string input
-  """
-  def parse_string_input(input) do
-    input
-    |> String.split([",", "\n"], trim: true)
-    |> Enum.map(&String.to_integer/1)
-  end
-
-  @doc """
   Computes a program, returning the first number as result
   """
   def compute_result(program, input) do
