@@ -1,21 +1,21 @@
 # Advent of Code 2019
 
-**TODO: Add description**
+My solutions to [Advent of Code 2019](https://adventofcode.com/) in [Elixir](https://elixir-lang.org) :heart:
 
-## Installation
+My goals for AoC2019:
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `advent_of_code_2019` to your list of dependencies in `mix.exs`:
+- Complete every day
+- Exercise and improve my Elixir skills
+- Publish readable code
 
-```elixir
-def deps do
-  [
-    {:advent_of_code_2019, "~> 0.1.0"}
-  ]
-end
+I will not optimize for speed, or for lines of code.
+
+
+## Run the tests
+
+Check out the project, fetch the dependencies and run the tests:
+
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/advent_of_code_2019](https://hexdocs.pm/advent_of_code_2019).
-
+mix deps.get
+mix test
+```
