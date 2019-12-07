@@ -1,6 +1,6 @@
 # Advent of Code 2019
 
-![](https://github.com/skovmand/advent_of_code_2019/workflows/Elixir%20CI/badge.svg)
+![](https://github.com/skovmand/advent_of_code_2019/workflows/Santa%20CI/badge.svg)
 
 My solutions to [Advent of Code 2019](https://adventofcode.com/) in [Elixir](https://elixir-lang.org) :heart:
 
