@@ -39,22 +39,9 @@ defmodule Advent19.MarsRoverBios do
   def decode_image(digit_list, x_size, y_size) do
     digit_list
     |> Enum.chunk_every(x_size * y_size)
-    |> overlay_pixels(x_size, y_size)
+    |> Enum.zip()
+    |> Enum.map(&Tuple.to_list/1)
+    |> Enum.map(&Enum.find(&1, fn color -> color != 2 end))
     |> Enum.chunk_every(y_size)
-  end
-
-  # Overlay pixels to find the winning pixel for each layer
-  # Looks at the layers vertically pixel by pixel, finding the first pixel that isn't transparent
-  defp overlay_pixels(layers, x_size, y_size) do
-    0..(x_size * y_size - 1)
-    |> Enum.reduce([], fn pixel, final_image ->
-      color =
-        layers
-        |> Stream.map(&Enum.at(&1, pixel))
-        |> Enum.find(&(&1 != 2))
-
-      [color | final_image]
-    end)
-    |> Enum.reverse()
   end
 end
