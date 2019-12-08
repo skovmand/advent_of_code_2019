@@ -44,6 +44,7 @@ defmodule Advent19.MarsRoverBios do
   end
 
   # Overlay pixels to find the winning pixel for each layer
+  # Looks at the layers vertically pixel by pixel, finding the first pixel that isn't transparent
   defp overlay_pixels(layers, x_size, y_size) do
     0..(x_size * y_size - 1)
     |> Enum.reduce([], fn pixel, final_image ->
