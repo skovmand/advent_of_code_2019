@@ -19,4 +19,14 @@ defmodule Advent19.Common do
     |> String.split([",", "\n"], trim: true)
     |> Enum.map(&String.to_integer/1)
   end
+
+  @doc """
+  Convert a string of single digits into a list of those digits
+  """
+  def single_digit_list(input) do
+    input
+    |> String.split("", trim: true)
+    |> Enum.reject(&(&1 == "\n"))
+    |> Enum.map(&String.to_integer/1)
+  end
 end
