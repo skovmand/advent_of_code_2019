@@ -1,6 +1,6 @@
-defmodule Advent19.ThermalTest do
+defmodule Advent19.IntcodeV9Test do
   @moduledoc """
-  All tests for the Intcode computer
+  All tests for the Intcode computer V9 computer
   """
 
   use ExUnit.Case, async: true
@@ -8,7 +8,39 @@ defmodule Advent19.ThermalTest do
   alias Advent19.Common
   alias Advent19.IntcodeV9
 
-  describe "parsing opcodes" do
+  test "should output 10" do
+    program = "109,4,21001,7,8,9,11102,2,2,14,4,13,99,0"
+
+    assert program |> Common.integer_list() |> IntcodeV9.compute_result([]) == [10]
+  end
+
+  describe "tests for relative mode, opcode 9, accessing arbitrary memory and using large numbers (day 9 part 1)" do
+    test "109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99 produces a copy of itself" do
+      program = "109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99"
+
+      assert program |> Common.integer_list() |> IntcodeV9.compute_result([]) ==
+               [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]
+    end
+
+    test "1102,34915192,34915192,7,4,7,99,0 outputs a 16-digit number" do
+      program = "1102,34915192,34915192,7,4,7,99,0"
+
+      result = program |> Common.integer_list() |> IntcodeV9.compute_result([]) |> List.first()
+
+      assert result >= 1_000_000_000_000_000
+      assert result < 10_000_000_000_000_000
+    end
+
+    test "104,1125899906842624,99 should output the large number in the middle" do
+      program = "104,1125899906842624,99"
+
+      assert program |> Common.integer_list() |> IntcodeV9.compute_result([]) |> List.first() == 1_125_899_906_842_624
+    end
+  end
+
+  # General Intcode Computer tests from previous versions, not a complete collection, but getting there:
+
+  describe "parsing opcodes (day 5 part 1)" do
     test "02" do
       assert IntcodeV9.parse_opcode_and_position_params(02) == {2, :pos, :pos, :pos}
     end
@@ -30,7 +62,7 @@ defmodule Advent19.ThermalTest do
     end
   end
 
-  describe "testing equality" do
+  describe "testing equality (day 5 part 2)" do
     # Using position mode, consider whether the input is equal to 8; output 1 (if it is) or 0 (if it is not).
     test "3,9,8,9,10,9,4,9,99,-1,8 with input 8" do
       assert "3,9,8,9,10,9,4,9,99,-1,8" |> Common.integer_list() |> IntcodeV9.compute_result([8]) == [1]
@@ -72,7 +104,7 @@ defmodule Advent19.ThermalTest do
     end
   end
 
-  describe "jump tests" do
+  describe "jump tests (day 5 part 2)" do
     # Jump test 1
     test "3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9 (using position mode) outputs 0 for input 0" do
       assert "3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9"

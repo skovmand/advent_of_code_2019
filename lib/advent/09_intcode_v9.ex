@@ -23,10 +23,10 @@ defmodule Advent19.IntcodeV9 do
   @doc """
   Compute a program, returning the program output
   """
-  def compute(program, input, output, instruction_pointer \\ 0) do
+  def compute(program, input, output, instruction_pointer \\ 0, relative_base \\ 0) do
     program
     |> read_next_instruction_and_parameters(instruction_pointer)
-    |> do_compute(program, input, output, instruction_pointer)
+    |> do_compute(program, input, output, instruction_pointer, relative_base)
   end
 
   defp read_next_instruction_and_parameters(program, instruction_pointer) do
@@ -39,7 +39,7 @@ defmodule Advent19.IntcodeV9 do
     parameter_count =
       case opcode_and_param_modes do
         {i, _, _, _} when i in [1, 2, 7, 8] -> 3
-        {i, _, _, _} when i in [3, 4] -> 1
+        {i, _, _, _} when i in [3, 4, 9] -> 1
         {i, _, _, _} when i in [5, 6] -> 2
         {99, _, _, _} -> 0
       end
@@ -69,55 +69,67 @@ defmodule Advent19.IntcodeV9 do
     |> Enum.map(fn
       0 -> :pos
       1 -> :imm
+      2 -> :rel
     end)
   end
 
   # Implementation of parameter modes
-  defp get_parameter(_program, param, :imm), do: param
-  defp get_parameter(program, param, :pos), do: program |> Map.get(param, 0)
+  defp get_parameter(_program, param, :imm, _), do: param
+  defp get_parameter(program, param, :pos, _), do: program |> Map.get(param, 0)
+  defp get_parameter(program, param, :rel, relative_base), do: program |> Map.get(relative_base + param, 0)
 
   # Opcode 1,2,7,8: Calculations with two parameters overwriting a position
-  defp do_compute([{opcode, p1m, p2m, _p3m}, p1, p2, update_pos | _tail], program, input, output, instruction_pointer)
+  defp do_compute([{opcode, p1m, p2m, p3m}, p1, p2, p3], program, input, output, instruction_pointer, rel_base)
        when opcode in [1, 2, 7, 8] do
-    left = program |> get_parameter(p1, p1m)
-    right = program |> get_parameter(p2, p2m)
+    left = program |> get_parameter(p1, p1m, rel_base)
+    right = program |> get_parameter(p2, p2m, rel_base)
+    update_pos = if(p3m == :rel, do: rel_base + p3, else: p3)
 
     program
-    |> Map.update!(update_pos, fn _ -> calculate_opcode(opcode, left, right) end)
-    |> compute(input, output, instruction_pointer + 4)
+    |> Map.put(update_pos, calculate_opcode(opcode, left, right))
+    |> compute(input, output, instruction_pointer + 4, rel_base)
   end
 
   # Opcode 3: Read from input
-  defp do_compute([{3, _, _, _}, update_pos | _tail], program, input, output, instruction_pointer) do
+  defp do_compute([{3, p1m, _, _}, p1], program, input, output, instruction_pointer, rel_base) do
     {opcode_input, input} = input |> List.pop_at(0)
+    update_pos = if(p1m == :rel, do: rel_base + p1, else: p1)
 
     program
-    |> Map.update!(update_pos, fn _ -> opcode_input end)
-    |> compute(input, output, instruction_pointer + 2)
+    |> Map.put(update_pos, opcode_input)
+    |> compute(input, output, instruction_pointer + 2, rel_base)
   end
 
   # Opcode 4: Write to output
-  defp do_compute([{4, p1m, _, _}, p1 | _tail], program, input, output, instruction_pointer) do
-    output_value = program |> get_parameter(p1, p1m)
+  defp do_compute([{4, p1m, _, _}, p1], program, input, output, instruction_pointer, rel_base) do
+    output_value = program |> get_parameter(p1, p1m, rel_base)
     output = [output_value | output]
 
     program
-    |> compute(input, output, instruction_pointer + 2)
+    |> compute(input, output, instruction_pointer + 2, rel_base)
   end
 
   # Opcode 5,6: Jump if true/false
-  defp do_compute([{opcode, p1m, p2m, _}, p1, p2 | _tail], program, input, output, instruction_pointer)
+  defp do_compute([{opcode, p1m, p2m, _}, p1, p2], program, input, output, instruction_pointer, rel_base)
        when opcode in [5, 6] do
-    boolean = program |> get_parameter(p1, p1m)
-         instruction_pointer_if_true = program |> get_parameter(p2, p2m)
+    boolean = program |> get_parameter(p1, p1m, rel_base)
+    instruction_pointer_if_true = program |> get_parameter(p2, p2m, rel_base)
 
     new_instruction_pointer = compare_opcode(opcode, boolean, instruction_pointer_if_true, instruction_pointer + 3)
 
-    program |> compute(input, output, new_instruction_pointer)
+    program |> compute(input, output, new_instruction_pointer, rel_base)
+  end
+
+  # Opcode 9: Set new relative base
+  defp do_compute([{9, p1m, _, _}, p1], program, input, output, instruction_pointer, rel_base) do
+    offset = program |> get_parameter(p1, p1m, rel_base)
+
+    program |> compute(input, output, instruction_pointer + 2, rel_base + offset)
   end
 
   # Opcode 99: Halt and send output
-  defp do_compute([{99, _, _, _} | _], _program, _input, output, _instruction_count), do: output |> Enum.reverse()
+  defp do_compute([{99, _, _, _} | _], _program, _input, output, _instruction_count, _rel_base),
+    do: output |> Enum.reverse()
 
   # Matches for calculation opcodes
   defp calculate_opcode(1, left, right), do: left + right
