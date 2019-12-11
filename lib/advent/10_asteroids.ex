@@ -17,7 +17,7 @@ defmodule Advent19.Asteroids do
       field
       |> parse_field()
       |> reject_empty_space()
-      |> angles_to_other_asteroids()
+      |> visible_asteroids()
       |> Enum.max_by(fn {_coords, visible_asteroids} -> visible_asteroids |> length() end)
 
     {position, visible_asteroids |> length()}
@@ -44,7 +44,7 @@ defmodule Advent19.Asteroids do
     field_map |> Enum.reject(fn {_k, v} -> v == "." end) |> Enum.into(%{})
   end
 
-  defp angles_to_other_asteroids(field_map) do
+  defp visible_asteroids(field_map) do
     horizontal_vector = {1, 0}
 
     field_map
