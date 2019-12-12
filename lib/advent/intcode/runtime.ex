@@ -9,7 +9,12 @@ defmodule Advent19.Intcode.Runtime do
     the current instruction pointer, the input and output.
     """
 
-    defstruct memory: [], pointer: 0, input: [], output: [], relative_base: 0
+    defstruct memory: [],
+              pointer: 0,
+              input: [],
+              output: [],
+              relative_base: 0,
+              handlers: %{}
 
     def read_program_into_memory(program) do
       program

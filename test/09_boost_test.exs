@@ -19,13 +19,13 @@ defmodule Advent19.BoostTest do
 
   describe "part 1: running the BOOST program" do
     test "running the program" do
-      assert @program |> Boost.start_program([1]) |> List.first() == 2_465_411_646
+      assert @program |> Boost.start_program(1) == 2_465_411_646
     end
   end
 
   describe "part 2: running the BOOST program" do
     test "running the program" do
-      assert @program |> Boost.start_program([2]) |> List.first() == 69781
+      assert @program |> Boost.start_program(2) == 69781
     end
   end
 end
