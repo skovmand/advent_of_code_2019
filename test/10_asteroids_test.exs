@@ -102,4 +102,22 @@ defmodule Advent19.AsteroidsTest do
       assert @field |> Asteroids.find_best_station() == {{26, 29}, 299}
     end
   end
+
+  describe "part 2" do
+    test "example" do
+      field = """
+      .#....#####...#..
+      ##...##.#####..##
+      ##...#...#.#####.
+      ..#.....#...###..
+      ..#.#.....#....##
+      """
+
+      assert field |> Asteroids.count_nth_burned_asteroid({8, -3}, 9) == {15, 1}
+    end
+
+    test "day 10 part 2 answer" do
+      assert @field |> Asteroids.count_nth_burned_asteroid({26, -29}, 200) == {14, 19}
+    end
+  end
 end
