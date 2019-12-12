@@ -10,7 +10,7 @@ defmodule Advent19.BoostTest do
   use ExUnit.Case, async: true
 
   alias Advent19.Common
-  alias Advent19.IntcodeV9
+  alias Advent19.Boost
 
   @program "input_09_boost.txt"
            |> Path.expand("./input_files")
@@ -19,13 +19,13 @@ defmodule Advent19.BoostTest do
 
   describe "part 1: running the BOOST program" do
     test "running the program" do
-      assert @program |> IntcodeV9.compute_result([1]) |> List.first() == 2_465_411_646
+      assert @program |> Boost.start_program([1]) |> List.first() == 2_465_411_646
     end
   end
 
   describe "part 2: running the BOOST program" do
     test "running the program" do
-      assert @program |> IntcodeV9.compute_result([2]) |> List.first() == 69781
+      assert @program |> Boost.start_program([2]) |> List.first() == 69781
     end
   end
 end
