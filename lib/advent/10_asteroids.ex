@@ -45,34 +45,47 @@ defmodule Advent19.Asteroids do
   end
 
   defp visible_asteroids(field_map) do
+    field_map
+    |> Enum.into(%{}, fn {{x, y} = _own_position, _} ->
+      angles_to_asteroids =
+        field_map
+        |> asteroids_grouped_by_angle({x, y})
+        |> remove_invisible_asteroids({x, y})
+
+      {{x, y}, angles_to_asteroids}
+    end)
+  end
+
+  # From a point of view (own position), group all asteroids by their angle
+  defp asteroids_grouped_by_angle(field_map, {x, y} = _own_position) do
+    # We will round floats to this position
+    precision = 5
     horizontal_vector = {1, 0}
 
     field_map
-    |> Enum.into(%{}, fn {{x, y} = source_coords, _} ->
-      angles_to_asteroids =
-        field_map
-        |> Map.delete({x, y})
-        |> Enum.map(fn {{x_1, y_1}, _} ->
-          vector = Vectors.from({x, y}, {x_1, y_1})
+    |> Map.delete({x, y})
+    |> Enum.map(fn {{x_1, y_1}, _} ->
+      vector = Vectors.from({x, y}, {x_1, y_1})
 
-          {{x_1, y_1}, Vectors.vector_angle(horizontal_vector, vector)}
-        end)
-        |> Enum.group_by(fn {{_x_1, _y_1}, angle} -> angle |> Float.ceil(5) end, fn {coords, _angle} -> coords end)
-        |> Enum.flat_map(fn {_angle, target_coords} ->
-          case target_coords |> Enum.count() do
-            1 ->
-              target_coords
+      {{x_1, y_1}, Vectors.vector_angle(horizontal_vector, vector)}
+    end)
+    |> Enum.group_by(fn {{_x_1, _y_1}, angle} -> angle |> Float.ceil(precision) end, fn {coords, _angle} -> coords end)
+  end
 
-            _more_than_one_target ->
-              [
-                Enum.min_by(target_coords, fn target_coords ->
-                  Vectors.from(source_coords, target_coords) |> Vectors.vector_length()
-                end)
-              ]
-          end
-        end)
+  # If more than one asteroid has the same angle, only keep the closest asteroid
+  defp remove_invisible_asteroids(asteroids_grouped_by_angle, own_position) do
+    asteroids_grouped_by_angle
+    |> Enum.flat_map(fn {_angle, target_coords} ->
+      case target_coords |> Enum.count() do
+        1 ->
+          target_coords
 
-      {{x, y}, angles_to_asteroids}
+        _more_than_one_target ->
+          Enum.min_by(target_coords, fn target_coords ->
+            Vectors.from(own_position, target_coords) |> Vectors.vector_length()
+          end)
+          |> List.wrap()
+      end
     end)
   end
 end
