@@ -58,7 +58,7 @@ defmodule Advent19.Intcode.Runner do
     output
     |> case do
       [element] -> element
-      other -> other
+      other -> other |> Enum.reverse()
     end
   end
 end
