@@ -1,6 +1,7 @@
-defmodule Advent19.Boost do
+defmodule Advent19.Intcode.Runner do
   @moduledoc """
-  Run the BOOST self-diagnostics and program
+  Runner for Intcode programs: 
+  Initializes the program and provides program break handlers
   """
 
   alias Advent19.Intcode.Runtime
@@ -10,7 +11,10 @@ defmodule Advent19.Boost do
   Start a program, with ability to specify break handlers :input, :output and :halt.
   If a break handler is not set, the default break handler will be used.
   """
-  def start_program(program, input, break_handlers \\ %{}) do
+  def start_program(program, opts \\ []) do
+    input = Keyword.get(opts, :input, [])
+    break_handlers = Keyword.get(opts, :break_handlers, %{})
+
     %Execution{
       memory: program |> Execution.read_program_into_memory(),
       input: input |> List.wrap(),
