@@ -8,10 +8,14 @@ defmodule Advent19.Intcode.Runner do
   alias Advent19.Intcode.Runtime.Execution
 
   @doc """
-  Start a program, with ability to specify break handlers :input, :output and :halt.
-  If a break handler is not set, the default break handler will be used.
+  Initialize and start a program (convenience function)
   """
-  def start_program(program, opts \\ []) do
+  def start(program, opts \\ []), do: init(program, opts) |> run()
+
+  @doc """
+  Initialize a program
+  """
+  def init(program, opts \\ []) do
     input = Keyword.get(opts, :input, [])
     break_handlers = Keyword.get(opts, :break_handlers, %{})
 
@@ -20,17 +24,18 @@ defmodule Advent19.Intcode.Runner do
       input: input |> List.wrap(),
       handlers: break_handlers
     }
-    |> run()
   end
 
-  # The initial function of the execution loop
-  defp run(%Execution{} = execution) do
+  @doc """
+  Run a program
+  """
+  def run(%Execution{} = execution) do
     Runtime.run(execution) |> parse_program_break()
   end
 
   # Handle input with a custom input handler
   defp parse_program_break({:waiting_for_input, %Execution{handlers: %{input: input_fn}} = execution}) do
-    execution |> input_fn.() |> run()
+    execution |> input_fn.()
   end
 
   # Default input handler
@@ -40,7 +45,7 @@ defmodule Advent19.Intcode.Runner do
 
   # Handle output with a custom output handler
   defp parse_program_break({:output, output_value, %Execution{handlers: %{output: output_fn}} = execution}) do
-    execution |> output_fn.(output_value) |> run()
+    execution |> output_fn.(output_value)
   end
 
   # Default output handler
@@ -55,10 +60,6 @@ defmodule Advent19.Intcode.Runner do
 
   # Default halt handler
   defp parse_program_break({:halt, %Execution{output: output}}) do
-    output
-    |> case do
-      [element] -> element
-      other -> other |> Enum.reverse()
-    end
+    output |> Enum.reverse()
   end
 end
