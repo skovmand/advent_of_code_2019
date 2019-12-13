@@ -9,7 +9,7 @@ defmodule Advent19.Paint do
   @doc """
   Paint the spaceship given the paint robot program
   """
-  def paint_spaceship(program) do
+  def paint_spaceship(program, start_color, mode) do
     # The output handler outputs every second output value to the parent, with parsed values
     handle_output = fn %Execution{output: output} = execution, output_value, continue_fn ->
       case output do
@@ -24,10 +24,21 @@ defmodule Advent19.Paint do
     end
 
     # Just output :halt when done
-    handle_halt = fn _ -> :halt end
+    handle_halt =
+      case mode do
+        :count ->
+          fn _ -> :halt_and_count end
+
+        :draw ->
+          fn _ -> :halt_and_draw end
+      end
 
     # Initialize the Execution
-    execution = Runner.init(program, input: 0, break_handlers: %{output: handle_output, halt: handle_halt})
+    execution =
+      Runner.init(program,
+        input: if(start_color == :black, do: 0, else: 1),
+        break_handlers: %{output: handle_output, halt: handle_halt}
+      )
 
     do_paint_panels(%{}, {0, 0}, :up, execution)
   end
@@ -56,8 +67,38 @@ defmodule Advent19.Paint do
     do_paint_panels(new_panel_map, new_position, new_direction, updated_execution)
   end
 
-  defp parse_output(:halt, panel_map, _, _) do
+  defp parse_output(:halt_and_count, panel_map, _, _) do
     panel_map |> Enum.count()
+  end
+
+  defp parse_output(:halt_and_draw, panel_map, _, _) do
+    panel_map |> to_ascii()
+  end
+
+  # Make lines with all pixels to draw
+  defp to_ascii(panel_map) do
+    {{min_x, _}, _} = panel_map |> Enum.min_by(fn {{x, _y}, _} -> x end)
+    {{_, min_y}, _} = panel_map |> Enum.min_by(fn {{_x, y}, _} -> y end)
+    {{max_x, _}, _} = panel_map |> Enum.max_by(fn {{x, _y}, _} -> x end)
+    {{_, max_y}, _} = panel_map |> Enum.max_by(fn {{_x, y}, _} -> y end)
+
+    min_y..max_y
+    |> Enum.to_list()
+    |> Enum.map(fn row ->
+      min_x..max_x
+      |> Enum.to_list()
+      |> Enum.map(fn column ->
+        Map.get(panel_map, {column, row}, :nothing)
+        |> case do
+          :nothing -> "."
+          :black -> "."
+          :white -> "O"
+        end
+      end)
+      |> Enum.join("")
+    end)
+    |> Enum.reverse()
+    |> Enum.join("\n")
   end
 
   defp new_position({x, y}, :down), do: {x, y - 1}
