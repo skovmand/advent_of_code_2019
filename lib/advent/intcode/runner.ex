@@ -55,10 +55,6 @@ defmodule Advent19.Intcode.Runner do
 
   # Default halt handler
   defp parse_program_break({:halt, %Execution{output: output}}) do
-    output
-    |> case do
-      [element] -> element
-      other -> other |> Enum.reverse()
-    end
+    output |> Enum.reverse()
   end
 end

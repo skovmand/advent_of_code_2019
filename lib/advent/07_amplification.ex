@@ -3,7 +3,7 @@ defmodule Advent19.Amplification do
   Send more power to the thrusters to reach Santa in time!
   """
 
-  alias Advent19.IntcodeV2
+  alias Advent19.Intcode.Runner
   alias Advent19.IntcodeV7
 
   @doc """
@@ -29,7 +29,7 @@ defmodule Advent19.Amplification do
   """
   def run_serial(program, phase_combination) do
     phase_combination
-    |> Enum.reduce([0], fn phase, input_signal -> IntcodeV2.compute_result(program, [phase | input_signal]) end)
+    |> Enum.reduce([0], fn phase, input_signal -> Runner.start_program(program, input: [phase | input_signal]) end)
     |> List.first()
   end
 
