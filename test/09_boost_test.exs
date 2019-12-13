@@ -20,13 +20,13 @@ defmodule Advent19.BoostTest do
 
   describe "part 1: running the BOOST program" do
     test "running the program" do
-      assert @program |> Runner.start_program(input: 1) == 2_465_411_646
+      assert @program |> Runner.start(input: 1) == [2_465_411_646]
     end
   end
 
   describe "part 2: running the BOOST program" do
     test "running the program" do
-      assert @program |> Runner.start_program(input: 2) == 69781
+      assert @program |> Runner.start(input: 2) == [69781]
     end
   end
 end

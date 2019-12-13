@@ -8,10 +8,14 @@ defmodule Advent19.Intcode.Runner do
   alias Advent19.Intcode.Runtime.Execution
 
   @doc """
-  Start a program, with ability to specify break handlers :input, :output and :halt.
-  If a break handler is not set, the default break handler will be used.
+  Initialize and start a program (convenience function)
   """
-  def start_program(program, opts \\ []) do
+  def start(program, opts \\ []), do: init(program, opts) |> run()
+
+  @doc """
+  Initialize a program
+  """
+  def init(program, opts \\ []) do
     input = Keyword.get(opts, :input, [])
     break_handlers = Keyword.get(opts, :break_handlers, %{})
 
@@ -20,11 +24,12 @@ defmodule Advent19.Intcode.Runner do
       input: input |> List.wrap(),
       handlers: break_handlers
     }
-    |> run()
   end
 
-  # The initial function of the execution loop
-  defp run(%Execution{} = execution) do
+  @doc """
+  Run a program
+  """
+  def run(%Execution{} = execution) do
     Runtime.run(execution) |> parse_program_break()
   end
 
