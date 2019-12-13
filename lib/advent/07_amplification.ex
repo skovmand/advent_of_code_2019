@@ -82,10 +82,11 @@ defmodule Advent19.Amplification do
   end
 
   # Create a map of amp => initial_input from a given phase combination
+  # Each amp is fed its phase as initial input, except the first amp which also recieves 0 as second input
   defp initial_input(phase_combination) do
     phase_combination
-    |> Enum.map(&[&1])
-    |> List.update_at(0, &(&1 ++ [0]))
+    |> List.update_at(0, fn phase -> [phase | [0]] end)
+    |> Enum.map(&List.wrap/1)
     |> Enum.with_index()
     |> Enum.into(%{}, fn {k, v} -> {v, k} end)
   end
