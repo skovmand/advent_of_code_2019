@@ -45,7 +45,10 @@ defmodule Advent19.Intcode.Runner do
 
   # Handle output with a custom output handler
   defp parse_program_break({:output, output_value, %Execution{handlers: %{output: output_fn}} = execution}) do
-    execution |> output_fn.(output_value)
+    # A continuation function will be passed as callback for the output handler
+    continue_fn = fn %Execution{} = execution -> run(execution) end
+
+    execution |> output_fn.(output_value, continue_fn)
   end
 
   # Default output handler

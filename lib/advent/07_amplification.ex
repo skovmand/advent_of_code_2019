@@ -60,7 +60,7 @@ defmodule Advent19.Amplification do
   """
   def run_feedback(program, phase_combination) do
     # Output handler: Breaks the program, outputting the output value and the execution for storing it
-    output_handler = fn %Execution{} = execution, output_value ->
+    output_handler = fn %Execution{} = execution, output_value, _ ->
       {:output, output_value, execution}
     end
 
