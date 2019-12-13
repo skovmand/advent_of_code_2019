@@ -4,7 +4,7 @@ defmodule Advent19.Amplification do
   """
 
   alias Advent19.Intcode.Runner
-  alias Advent19.IntcodeV7
+  alias Advent19.Intcode.Runtime.Execution
 
   @doc """
   Part 1
@@ -29,7 +29,7 @@ defmodule Advent19.Amplification do
   """
   def run_serial(program, phase_combination) do
     phase_combination
-    |> Enum.reduce([0], fn phase, input_signal -> Runner.start_program(program, input: [phase | input_signal]) end)
+    |> Enum.reduce([0], fn phase, input_signal -> Runner.start(program, input: [phase | input_signal]) end)
     |> List.first()
   end
 
@@ -59,25 +59,47 @@ defmodule Advent19.Amplification do
                                                        (to thrusters)
   """
   def run_feedback(program, phase_combination) do
-    initial_input = phase_combination |> initial_input()
+    # Output handler: Breaks the program, outputting the output value and the execution for storing it
+    output_handler = fn %Execution{} = execution, output_value ->
+      {:output, output_value, execution}
+    end
 
-    Stream.cycle(0..4)
-    |> Enum.reduce_while({initial_input, [], %{}}, fn amp, {initial_inputs, next_input, memory_dump} ->
-      {amp_input, initial_inputs} =
-        case Map.fetch(initial_inputs, amp) do
-          :error -> {next_input, initial_inputs}
-          {:ok, initial_input} -> {initial_input ++ next_input, initial_inputs |> Map.delete(amp)}
-        end
+    # Halt handler: Just outputs :halt, nothing else
+    halt_handler = fn _ -> :halt end
 
-      {next_instruction_pointer, amp_program, _} = Map.get(memory_dump, amp, {0, program, []})
+    # Set up the initial executions
+    amp_executions = init_executions(program, phase_combination, %{output: output_handler, halt: halt_handler})
 
-      case IntcodeV7.compute(amp_program, amp_input, [], next_instruction_pointer) do
-        {:halt, _} ->
-          {:halt, memory_dump |> last_value_from_amp_e()}
+    # The count of amps is the length of the phase combination, counting from 0
+    amp_count = (phase_combination |> Enum.count()) - 1
 
-        {:output, output, {next_instruction, program}} ->
-          {:cont, {initial_inputs, output, memory_dump |> Map.put(amp, {next_instruction, program, output})}}
+    Stream.cycle(0..amp_count)
+    |> Enum.reduce_while(amp_executions, fn amp_number, amp_executions ->
+      case Runner.run(amp_executions |> Map.fetch!(amp_number)) do
+        {:output, output_value, execution_snapshot} ->
+          next_amp_number = rem(amp_number + 1, amp_count + 1)
+
+          updated_amp_executions =
+            amp_executions
+            |> Map.put(amp_number, execution_snapshot)
+            |> Map.update!(amp_number, fn execution -> execution |> Map.put(:output, output_value) end)
+            |> Map.update!(next_amp_number, fn execution ->
+              execution |> Map.update!(:input, fn input -> [output_value | input] |> Enum.reverse() end)
+            end)
+
+          {:cont, updated_amp_executions}
+
+        :halt ->
+          {:halt, amp_executions |> Map.fetch!(amp_count) |> Map.fetch!(:output)}
       end
+    end)
+  end
+
+  # Create an Execution struct for each amp
+  defp init_executions(program, phase_combination, handlers) do
+    initial_input(phase_combination)
+    |> Enum.into(%{}, fn {amp_number, initial_input} ->
+      {amp_number, Runner.init(program, input: initial_input, break_handlers: handlers)}
     end)
   end
 
@@ -90,9 +112,6 @@ defmodule Advent19.Amplification do
     |> Enum.with_index()
     |> Enum.into(%{}, fn {k, v} -> {v, k} end)
   end
-
-  # When the program ends, we fetch the last output from amp E ("4" in our memory dump map)
-  defp last_value_from_amp_e(%{4 => {_, _, [value]}}), do: value
 
   # All 120 possible phases for the amplifiers
   defp all_phase_combinations(range) do

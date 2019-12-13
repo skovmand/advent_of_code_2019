@@ -35,7 +35,7 @@ defmodule Advent19.Intcode.Runner do
 
   # Handle input with a custom input handler
   defp parse_program_break({:waiting_for_input, %Execution{handlers: %{input: input_fn}} = execution}) do
-    execution |> input_fn.() |> run()
+    execution |> input_fn.()
   end
 
   # Default input handler
@@ -45,7 +45,7 @@ defmodule Advent19.Intcode.Runner do
 
   # Handle output with a custom output handler
   defp parse_program_break({:output, output_value, %Execution{handlers: %{output: output_fn}} = execution}) do
-    execution |> output_fn.(output_value) |> run()
+    execution |> output_fn.(output_value)
   end
 
   # Default output handler
