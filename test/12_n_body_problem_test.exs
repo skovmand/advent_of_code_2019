@@ -57,7 +57,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(1) == step_1_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(1) == step_1_state
 
       step_2_state =
         """
@@ -68,7 +68,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(2) == step_2_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(2) == step_2_state
 
       step_3_state =
         """
@@ -79,7 +79,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(3) == step_3_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(3) == step_3_state
 
       step_4_state =
         """
@@ -90,7 +90,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(4) == step_4_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(4) == step_4_state
 
       step_5_state =
         """
@@ -101,7 +101,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(5) == step_5_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(5) == step_5_state
 
       step_6_state =
         """
@@ -112,7 +112,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(6) == step_6_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(6) == step_6_state
 
       step_7_state =
         """
@@ -123,7 +123,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(7) == step_7_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(7) == step_7_state
 
       step_8_state =
         """
@@ -134,7 +134,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(8) == step_8_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(8) == step_8_state
 
       step_9_state =
         """
@@ -145,7 +145,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(9) == step_9_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(9) == step_9_state
 
       step_10_state =
         """
@@ -156,7 +156,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(10) == step_10_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(10) == step_10_state
 
       assert step_10_state |> NBodyProblem.total_kinetic_energy() == 179
     end
@@ -191,7 +191,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(10) == step_10_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(10) == step_10_state
 
       step_20_state =
         """
@@ -202,7 +202,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(20) == step_20_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(20) == step_20_state
 
       step_30_state =
         """
@@ -213,7 +213,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(30) == step_30_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(30) == step_30_state
 
       step_40_state =
         """
@@ -224,7 +224,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(40) == step_40_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(40) == step_40_state
 
       step_50_state =
         """
@@ -235,7 +235,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(50) == step_50_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(50) == step_50_state
 
       step_60_state =
         """
@@ -246,7 +246,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(60) == step_60_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(60) == step_60_state
 
       step_70_state =
         """
@@ -257,7 +257,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(70) == step_70_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(70) == step_70_state
 
       step_80_state =
         """
@@ -268,7 +268,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(80) == step_80_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(80) == step_80_state
 
       step_90_state =
         """
@@ -279,7 +279,7 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(90) == step_90_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(90) == step_90_state
 
       step_100_state =
         """
@@ -290,13 +290,19 @@ defmodule Advent19.NBodyProblemTest do
         """
         |> position_and_velocity()
 
-      assert input |> NBodyProblem.moon_state(100) == step_100_state
+      assert input |> NBodyProblem.init_moons() |> NBodyProblem.moon_state(100) == step_100_state
 
       assert step_100_state |> NBodyProblem.total_kinetic_energy() == 1940
     end
 
     test "the answer to part 1" do
       assert @input |> NBodyProblem.total_kinetic_energy(1000) == 8454
+    end
+  end
+
+  describe "part 2" do
+    test "answering amount of needed steps to get same state" do
+      assert @input |> NBodyProblem.init_moons() |> NBodyProblem.time_cycles_to_loop() == 362_336_016_722_948
     end
   end
 end

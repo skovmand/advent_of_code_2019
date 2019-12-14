@@ -38,12 +38,22 @@ defmodule Advent19.NBodyProblem do
     end
   end
 
+  # Find the greatest common divisor for two numbers
+  defp gcd(a, 0), do: abs(a)
+  defp gcd(a, b), do: gcd(b, rem(a, b))
+
+  # Find the least common multiple of a number
+  defp lcm(a, b), do: div(abs(a * b), gcd(a, b))
+  defp lcm(x, y, z), do: lcm(x, lcm(y, z))
+
   @doc """
-  Calculate total kinetic energy after n steps given position coordinates
-  OR given a list of moons
+  Calculate total kinetic energy after n steps given position coordinates OR given a list of moons
+  This is entry point for question 1
   """
   def total_kinetic_energy(position_coordinates, steps) do
-    moon_state(position_coordinates, steps)
+    position_coordinates
+    |> init_moons()
+    |> moon_state(steps)
     |> total_kinetic_energy()
   end
 
@@ -57,13 +67,60 @@ defmodule Advent19.NBodyProblem do
   end
 
   @doc """
+  Search for an identical moon state
+  Entry point for question 2
+
+  The idea here is to find the number of time cycles until x, y and z repeat
+  individually. This can be done fairly quickly because the axis are independent
+  of each other.
+
+  Then we will find the least common multiple for the three numbers, which guarantees
+  that the initial state will happen at that exact cycle.
+  """
+  def time_cycles_to_loop(moons) do
+    initial_x = moons |> get_moon_coordinate(:x)
+    initial_y = moons |> get_moon_coordinate(:y)
+    initial_z = moons |> get_moon_coordinate(:z)
+
+    x = moons |> find_identical_state_for(:x, initial_x)
+    y = moons |> find_identical_state_for(:y, initial_y)
+    z = moons |> find_identical_state_for(:z, initial_z)
+
+    lcm(x, y, z)
+  end
+
+  # Find the first identical state for a list of coordinates
+  defp find_identical_state_for(moons, coordinate, initial_state) do
+    do_find_identical(moons, coordinate, initial_state, 1)
+  end
+
+  defp do_find_identical(moons, coordinate, initial_state, round) do
+    updated_moons =
+      moons
+      |> apply_gravity()
+      |> apply_velocity()
+
+    this_state = updated_moons |> get_moon_coordinate(coordinate)
+
+    if initial_state == this_state,
+      do: round,
+      else: do_find_identical(updated_moons, coordinate, initial_state, round + 1)
+  end
+
+  # Transform a list of moons into e.g. only its x coordinate for both position and velocity
+  defp get_moon_coordinate(moons, coordinate) do
+    moons
+    |> Enum.flat_map(fn %Moon{position: position, velocity: velocity} ->
+      [position |> Map.get(coordinate), velocity |> Map.get(coordinate)]
+    end)
+  end
+
+  @doc """
   Calculate the moon states after n steps
   """
-  def moon_state(position_coordinates, steps) do
-    moons = position_coordinates |> init_moons()
-
+  def moon_state(moons, steps) do
     1..steps
-    |> Enum.reduce(moons, fn step, moons ->
+    |> Enum.reduce(moons, fn _, moons ->
       moons
       |> apply_gravity()
       |> apply_velocity()
