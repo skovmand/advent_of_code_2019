@@ -73,7 +73,12 @@ defmodule Advent19.Paint do
   end
 
   defp parse_output(:halt_and_draw, panel_map, _, _) do
-    panel_map |> Screen.map_to_ascii()
+    graphics_map = %{
+      black: ".",
+      white: "O"
+    }
+
+    panel_map |> Screen.map_to_ascii(graphics_map, flip_y: true)
   end
 
   defp new_position({x, y}, :down), do: {x, y - 1}

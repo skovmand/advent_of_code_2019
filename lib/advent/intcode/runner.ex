@@ -17,11 +17,13 @@ defmodule Advent19.Intcode.Runner do
   """
   def init(program, opts \\ []) do
     input = Keyword.get(opts, :input, [])
+    output = Keyword.get(opts, :output, [])
     break_handlers = Keyword.get(opts, :break_handlers, %{})
 
     %Execution{
       memory: program |> Execution.read_program_into_memory(),
       input: input |> List.wrap(),
+      output: output,
       handlers: break_handlers
     }
   end
