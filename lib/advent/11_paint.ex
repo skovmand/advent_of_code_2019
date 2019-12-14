@@ -5,6 +5,7 @@ defmodule Advent19.Paint do
 
   alias Advent19.Intcode.Runner
   alias Advent19.Intcode.Runtime.Execution
+  alias Advent19.Screen
 
   @doc """
   Paint the spaceship given the paint robot program
@@ -72,33 +73,7 @@ defmodule Advent19.Paint do
   end
 
   defp parse_output(:halt_and_draw, panel_map, _, _) do
-    panel_map |> to_ascii()
-  end
-
-  # Make lines with all pixels to draw
-  defp to_ascii(panel_map) do
-    {{min_x, _}, _} = panel_map |> Enum.min_by(fn {{x, _y}, _} -> x end)
-    {{_, min_y}, _} = panel_map |> Enum.min_by(fn {{_x, y}, _} -> y end)
-    {{max_x, _}, _} = panel_map |> Enum.max_by(fn {{x, _y}, _} -> x end)
-    {{_, max_y}, _} = panel_map |> Enum.max_by(fn {{_x, y}, _} -> y end)
-
-    min_y..max_y
-    |> Enum.to_list()
-    |> Enum.map(fn row ->
-      min_x..max_x
-      |> Enum.to_list()
-      |> Enum.map(fn column ->
-        Map.get(panel_map, {column, row}, :nothing)
-        |> case do
-          :nothing -> "."
-          :black -> "."
-          :white -> "O"
-        end
-      end)
-      |> Enum.join("")
-    end)
-    |> Enum.reverse()
-    |> Enum.join("\n")
+    panel_map |> Screen.map_to_ascii()
   end
 
   defp new_position({x, y}, :down), do: {x, y - 1}
